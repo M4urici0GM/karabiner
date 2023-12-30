@@ -1,4 +1,5 @@
-import { To, KeyCode, Manipulator, KarabinerRules, Modifiers } from "./types";
+import { writeFile } from 'fs/promises';
+import { To, KeyCode, Manipulator, KarabinerRules } from "./types";
 
 /**
  * Custom way to describe a command in a layer
@@ -170,4 +171,28 @@ export function remap(key_code: KeyCode, modifiers: string[] = []): LayerCommand
  */
 export function app(name: string): LayerCommand {
     return open(`-a '${name}.app'`);
+}
+
+
+export async function writeFileToDisk<T>(fileName: string, rules: T) {
+    return writeFile(
+        fileName,
+        JSON.stringify(
+            {
+                global: {
+                    show_in_menu_bar: false,
+                },
+                profiles: [
+                    {
+                        name: "Default",
+                        complex_modifications: {
+                            rules,
+                        },
+                    },
+                ],
+            },
+            null,
+            2
+        )
+    );
 }

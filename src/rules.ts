@@ -1,8 +1,7 @@
-import fs from "fs";
 import { KarabinerRules } from "./types";
 import { createHyperSubLayers, remap } from "./utils";
 
-const rules: KarabinerRules[] = [
+export default [
     // Define the Hyper key itself
     {
         description: "Hyper Key (⌃⌥⇧⌘)",
@@ -12,15 +11,10 @@ const rules: KarabinerRules[] = [
                 from: {
                     key_code: "caps_lock",
                 },
-                to: [
-                    {
-                        key_code: "left_shift",
-                        modifiers: ["left_command", "left_control", "left_option"],
-                    },
-                ],
+                to: [{ key_code: "left_shift", modifiers: ["left_command", "left_control", "left_option"] }],
                 to_if_alone: [
                     {
-                        key_code: "escape",
+                        key_code: "caps_lock",
                     },
                 ],
                 type: "basic",
@@ -51,25 +45,5 @@ const rules: KarabinerRules[] = [
         },
 
     }),
-];
+] as KarabinerRules[];
 
-fs.writeFileSync(
-    "karabiner.json",
-    JSON.stringify(
-        {
-            global: {
-                show_in_menu_bar: false,
-            },
-            profiles: [
-                {
-                    name: "Default",
-                    complex_modifications: {
-                        rules,
-                    },
-                },
-            ],
-        },
-        null,
-        2
-    )
-);
