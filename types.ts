@@ -64,7 +64,7 @@ interface InputSource {
 type VaribaleCondition = {
   type: "variable_if" | "variable_unless",
   name: string | number | boolean,
-  value: string,
+  value: string | number,
   description?: string,
 }
 
