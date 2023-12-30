@@ -1,5 +1,5 @@
 import { writeFile } from 'fs/promises';
-import { To, KeyCode, Manipulator, KarabinerRules } from "./types";
+import { To, KeyCode, Manipulator, KarabinerRules, Modifiers } from "./types";
 
 /**
  * Custom way to describe a command in a layer
@@ -104,9 +104,8 @@ export function createHyperSubLayer(
 export function createHyperSubLayers(subLayers: {
     [key_code in KeyCode]?: HyperKeySublayer | LayerCommand;
 }): KarabinerRules[] {
-    const allSubLayerVariables = (
-        Object.keys(subLayers) as (keyof typeof subLayers)[]
-    ).map((sublayer_key) => generateSubLayerVariableName(sublayer_key));
+    const allSubLayerVariables = (Object.keys(subLayers) as (keyof typeof subLayers)[])
+        .map((sublayer_key) => generateSubLayerVariableName(sublayer_key));
 
     return Object.entries(subLayers).map(([key, value]) =>
         "to" in value
@@ -158,6 +157,40 @@ export function open(what: string): LayerCommand {
         ],
         description: `Open ${what}`,
     };
+}
+
+
+export function remapFrom(fromCode: KeyCode, fromModifiers: Modifiers, toCode: KeyCode, toModifiers: string[] = []): KarabinerRules {
+    return {
+        description: `HyperKey + ${fromCode} -> ${toCode}`,
+        manipulators: [
+            {
+                type: "basic",
+                from: {
+                    key_code: fromCode,
+                    modifiers: fromModifiers,
+                },
+                to: [
+                    {
+                        key_code: toCode,
+                        modifiers: toModifiers,
+                    }
+                ],
+                conditions: [
+                    {
+                        type: "variable_if",
+                        name: "hyper_sublayer_s",
+                        value: 0,
+                    },
+                    {
+                        type: "variable_if",
+                        name: "hyper_sublayer_c",
+                        value: 0,
+                    }
+                ]
+            }
+        ],
+    }
 }
 
 export function remap(key_code: KeyCode, modifiers: string[] = []): LayerCommand {

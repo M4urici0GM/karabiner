@@ -1,17 +1,17 @@
 import rules from './rules';
 import { writeFileToDisk } from './utils';
 import { shouldReplaceConfig } from './input';
-import { backup_file, create_recursive, get_karabiner_config_file } from './fileUtils';
+import { backupCurrentFile, createKarabinerFolder, getKarabinerConfigFile } from './fileUtils';
 
 const entryPoint = async () => {
     const replaceConfig = await shouldReplaceConfig();
     const fileName = (replaceConfig)
-        ? get_karabiner_config_file()
+        ? getKarabinerConfigFile()
         : "./karabiner.json";
 
     if (replaceConfig) {
-        await create_recursive();
-        await backup_file();
+        await createKarabinerFolder();
+        await backupCurrentFile();
     }
 
     await writeFileToDisk(fileName, rules);
